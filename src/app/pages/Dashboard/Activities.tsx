@@ -21,27 +21,27 @@ export default function ProfessorActivities() {
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: "1",
-      title: "Club Robotique - Session 1",
+      title: "Mathématiques Avancées",
       date: "2026-03-02",
-      time: "14:00",
-      timeEnd: "16:00",
-      room: "Labo 1",
-      capacity: 50,
-      enrolled: 45,
-      description: "Introduction à la programmation Arduino.",
-      enrolledStudents: BENINESE_STUDENTS.slice(0, 45)
+      time: "08:00",
+      timeEnd: "10:00",
+      room: "Amphi A",
+      capacity: 150,
+      enrolled: 120,
+      description: "Cours magistral sur l'analyse complexe.",
+      enrolledStudents: BENINESE_STUDENTS.slice(0, 120)
     },
     {
       id: "2",
-      title: "Séminaire IA & Éthique",
+      title: "Programmation Web",
       date: "2026-03-05",
-      time: "10:00",
-      timeEnd: "12:00",
-      room: "Amphi A",
-      capacity: 200,
-      enrolled: 156,
-      description: "Discussion sur les enjeux de l'IA au Bénin.",
-      enrolledStudents: [...BENINESE_STUDENTS, ...BENINESE_STUDENTS.slice(0, 56)] // Simulating 156 students
+      time: "10:30",
+      timeEnd: "12:30",
+      room: "Labo 1",
+      capacity: 100,
+      enrolled: 85,
+      description: "Travaux pratiques sur React et TypeScript.",
+      enrolledStudents: BENINESE_STUDENTS.slice(0, 85)
     }
   ]);
 
@@ -94,8 +94,8 @@ export default function ProfessorActivities() {
     <div className="space-y-8">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Mes Activités</h1>
-          <p className="text-text-secondary">Gérez vos événements et cours spéciaux</p>
+          <h1 className="text-3xl font-bold">Mes Cours</h1>
+          <p className="text-text-secondary">Gérez vos cours et supports pédagogiques</p>
         </div>
         
         <button 
@@ -103,7 +103,7 @@ export default function ProfessorActivities() {
           className="flex items-center gap-2 px-6 py-4 bg-primary text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition-transform"
         >
           <Plus className="w-6 h-6" />
-          Nouvelle Activité
+          Nouveau Cours
         </button>
       </header>
 
@@ -179,7 +179,7 @@ export default function ProfessorActivities() {
         {activities.length === 0 && (
           <div className="md:col-span-2 py-20 bg-muted/30 rounded-[32px] border-2 border-dashed border-border text-center">
             <AlertCircle className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-20" />
-            <p className="text-text-secondary">Aucune activité créée pour le moment.</p>
+            <p className="text-text-secondary">Aucun cours créé pour le moment.</p>
           </div>
         )}
       </div>
@@ -264,7 +264,7 @@ export default function ProfessorActivities() {
               className="fixed inset-x-6 top-[10%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[600px] bg-surface rounded-[40px] shadow-2xl z-[70] overflow-hidden"
             >
               <div className="p-8 border-b border-border flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Nouvelle Activité</h2>
+                <h2 className="text-2xl font-bold">Nouveau Cours</h2>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-muted rounded-xl transition-colors">
                   <X className="w-6 h-6" />
                 </button>
@@ -272,13 +272,13 @@ export default function ProfessorActivities() {
 
               <form onSubmit={handleSubmit} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-text-secondary ml-1">Titre de l'activité</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-text-secondary ml-1">Titre du cours</label>
                   <input 
                     type="text" 
                     required
                     value={formData.title}
                     onChange={e => setFormData({...formData, title: e.target.value})}
-                    placeholder="Ex: Club de programmation"
+                    placeholder="Ex: Algorithmique avancée"
                     className="w-full px-5 py-4 bg-muted rounded-2xl border-2 border-transparent focus:border-primary focus:bg-surface outline-none transition-all"
                   />
                 </div>
@@ -347,7 +347,7 @@ export default function ProfessorActivities() {
                     rows={3}
                     value={formData.description}
                     onChange={e => setFormData({...formData, description: e.target.value})}
-                    placeholder="Détails de l'activité..."
+                    placeholder="Détails du cours..."
                     className="w-full px-5 py-4 bg-muted rounded-2xl border-2 border-transparent focus:border-primary focus:bg-surface outline-none transition-all resize-none"
                   />
                 </div>
@@ -356,7 +356,7 @@ export default function ProfessorActivities() {
                   type="submit"
                   className="w-full py-5 bg-primary text-white rounded-2xl font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
-                  Créer l'activité
+                  Créer le cours
                 </button>
               </form>
             </motion.div>

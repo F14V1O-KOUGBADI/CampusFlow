@@ -185,7 +185,7 @@ export default function Landing() {
             <FeatureCard 
               icon={<Users className="w-8 h-8" />}
               title="Interface Enseignants"
-              description="Outils dédiés pour la gestion des cours, des notes et des activités parascolaires."
+              description="Outils dédiés pour la gestion des cours, des notes et du planning académique."
               color="bg-indigo-500"
             />
           </div>
@@ -274,7 +274,7 @@ export default function Landing() {
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                   <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest">Gestion Notes</span>
                   <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest">Planning Prof</span>
-                  <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest">Activités</span>
+                  <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest">Gestion Cours</span>
                 </div>
               </div>
               <div className="w-48 h-48 bg-muted rounded-[32px] flex items-center justify-center border border-border overflow-hidden">
@@ -297,13 +297,13 @@ export default function Landing() {
             <RoleCard 
               title="Espace Étudiant"
               description="Suivez votre planning, consultez vos notes et recevez des alertes pour ne rien rater de votre parcours."
-              features={["Planning personnalisé", "Relevé de notes digital", "Notifications push", "Inscription activités"]}
+              features={["Planning personnalisé", "Relevé de notes digital", "Notifications push", "Suivi des cours"]}
               icon={<GraduationCap className="w-12 h-12" />}
             />
             <RoleCard 
               title="Espace Professeur"
-              description="Gérez vos cours, publiez les résultats et organisez des événements parascolaires en toute simplicité."
-              features={["Gestion des notes", "Planning enseignant", "Création d'activités", "Suivi des effectifs"]}
+              description="Gérez vos cours, publiez les résultats et organisez votre planning académique en toute simplicité."
+              features={["Gestion des notes", "Planning enseignant", "Gestion des cours", "Suivi des effectifs"]}
               icon={<Users className="w-12 h-12" />}
             />
           </div>

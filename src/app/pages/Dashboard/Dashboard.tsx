@@ -178,12 +178,12 @@ function StudentDashboard({ user }: { user: any }) {
               icon={<BookOpen className="w-5 h-5 text-primary" />}
             />
             <StatCard 
-              title="Activités Inscrites" 
-              value="5" 
-              subtitle="3 cette semaine"
-              progress={40} 
+              title="Cours Validés" 
+              value="12" 
+              subtitle="Semestre en cours"
+              progress={85} 
               color="bg-accent" 
-              icon={<Users className="w-5 h-5 text-accent" />}
+              icon={<BookOpen className="w-5 h-5 text-accent" />}
             />
           </div>
         </div>
@@ -226,8 +226,8 @@ function ProfessorDashboard({ user }: { user: any }) {
           <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6">
             <Plus className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold mb-2">Nouvelle Activité</h3>
-          <p className="text-primary-100 text-sm">Créez un cours ou un événement pour vos étudiants.</p>
+          <h3 className="text-xl font-bold mb-2">Nouveau Cours</h3>
+          <p className="text-primary-100 text-sm">Gérez vos cours et supports pour vos étudiants.</p>
         </motion.button>
         
         <motion.button 
@@ -264,10 +264,10 @@ function ProfessorDashboard({ user }: { user: any }) {
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Activités Récentes</h3>
+          <h3 className="text-xl font-bold">Cours Récents</h3>
           <div className="space-y-4">
-            <ActivityProgressCard title="Club Robotique" enrolled={45} capacity={50} />
-            <ActivityProgressCard title="Séminaire IA" enrolled={120} capacity={150} />
+            <ActivityProgressCard title="Mathématiques Avancées" enrolled={120} capacity={150} />
+            <ActivityProgressCard title="Programmation Web" enrolled={85} capacity={100} />
           </div>
         </div>
       </div>

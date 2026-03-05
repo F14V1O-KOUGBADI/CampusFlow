@@ -43,7 +43,7 @@ export default function Layout() {
     ? [
         { label: "Accueil", icon: LayoutDashboard, path: "/dashboard" },
         { label: "Planning", icon: Calendar, path: "/dashboard/schedule" },
-        { label: "Activités", icon: Plus, path: "/dashboard/activities" },
+        { label: "Cours", icon: Plus, path: "/dashboard/activities" },
       ]
     : [
         { label: "Accueil", icon: LayoutDashboard, path: "/dashboard" },

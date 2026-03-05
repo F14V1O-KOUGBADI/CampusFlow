@@ -33,7 +33,7 @@ export default function RegisterStep1() {
           onClick={() => updateRole("professor")}
           icon="📚"
           title="Professeur"
-          description="J'interviens dans une université et je veux gérer mes activités."
+          description="J'interviens dans une université et je veux gérer mes cours."
         />
       </div>
 
