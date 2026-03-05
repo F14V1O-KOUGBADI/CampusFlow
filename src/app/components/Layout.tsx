@@ -31,6 +31,11 @@ export default function Layout() {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login", { replace: true });
+  };
+
   if (!user) return null;
 
   const notifications = [
@@ -91,7 +96,7 @@ export default function Layout() {
             Paramètres
           </button>
           <button 
-            onClick={logout}
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-destructive hover:bg-destructive/10 transition-all"
           >
             <LogOut className="w-5 h-5" />
@@ -214,9 +219,10 @@ export default function Layout() {
                   <ChevronRight className="w-5 h-5 text-text-secondary" />
                 </button>
                 <button 
-                  onClick={() => {
-                    logout();
+                  onClick={async () => {
+                    await logout();
                     setProfileOpen(false);
+                    navigate("/login", { replace: true });
                   }}
                   className="w-full flex items-center justify-center gap-3 p-4 bg-destructive text-white rounded-2xl font-bold shadow-lg"
                 >

@@ -10,44 +10,80 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (data: any) => Promise<boolean>;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const demoAccounts: Record<string, any> = {
-  "etudiant@demo.com": { password: "demo123", name: "Koffi Sènan", role: "student" },
-  "professeur@demo.com": { password: "demo123", name: "Charlemagne Babatoundé Igué", role: "professor" },
-  "admin@demo.com": { password: "demo123", name: "Moussa Soglo", role: "admin" },
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const saved = localStorage.getItem("campusflow_user");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      localStorage.removeItem("campusflow_user");
-      return null;
-    }
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email: string, password: string): boolean => {
-    const account = demoAccounts[email];
-    if (account && account.password === password) {
-      const userData = { email, name: account.name, role: account.role };
-      setUser(userData);
-      localStorage.setItem("campusflow_user", JSON.stringify(userData));
-      return true;
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error("Auth check failed", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+        return true;
+      }
+    } catch (error) {
+      console.error("Login failed", error);
     }
     return false;
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("campusflow_user");
+  const register = async (registrationData: any): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registrationData),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+        return true;
+      }
+    } catch (error) {
+      console.error("Registration failed", error);
+    }
+    return false;
+  };
+
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      setUser(null);
+    }
   };
 
   return (
@@ -55,11 +91,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         login,
+        register,
         logout,
         isAuthenticated: !!user,
+        loading,
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

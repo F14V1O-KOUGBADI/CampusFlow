@@ -12,13 +12,16 @@ export default function Login() {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const success = login(email, password);
+    setLoading(true);
+    const success = await login(email, password);
+    setLoading(false);
     if (success) {
       navigate("/dashboard");
     } else {
@@ -36,8 +39,10 @@ export default function Login() {
     }, 3000);
   };
 
-  const handleDemoLogin = (demoEmail: string) => {
-    const success = login(demoEmail, "demo123");
+  const handleDemoLogin = async (demoEmail: string) => {
+    setLoading(true);
+    const success = await login(demoEmail, "demo123");
+    setLoading(false);
     if (success) {
       navigate("/dashboard");
     }
@@ -120,9 +125,10 @@ export default function Login() {
 
           <button 
             type="submit"
-            className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+            disabled={loading}
+            className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Se connecter
+            {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
 
