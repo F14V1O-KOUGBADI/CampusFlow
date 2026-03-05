@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  --color-primary: #1E40AF;
+  --color-primary-foreground: #FFFFFF;
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+
+  --color-secondary: #10B981;
+  --color-secondary-foreground: #FFFFFF;
+  --color-success: #10B981;
+
+  --color-accent: #9333EA;
+  --color-info: #3B82F6;
+
+  --color-background: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-muted: #F1F5F9;
+  --color-muted-foreground: #64748B;
+  --color-destructive: #EF4444;
+  --color-input: #E2E8F0;
+  --color-input-background: #FFFFFF;
+
+  --color-sidebar: #FFFFFF;
+  --color-sidebar-primary: #1E40AF;
+  --color-sidebar-accent: #EFF6FF;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius: 24px;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0/0.03);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0/0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0/0.05);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  
+  h1 { @apply text-[40px] font-bold tracking-tight; }
+  h2 { @apply text-[32px] font-bold tracking-tight; }
+  h3 { @apply text-[24px] font-semibold; }
+  
+  .dark {
+    --color-background: #0F172A;
+    --color-foreground: #F8FAFC;
+    --color-card: #1E293B;
+    --color-muted: #334155;
+    --color-muted-foreground: #94A3B8;
+    --color-border: #334155;
+    --color-surface: #1E293B;
+    --color-sidebar: #1E293B;
+    --color-input-background: #0F172A;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+  }
+  
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+  }
+
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
