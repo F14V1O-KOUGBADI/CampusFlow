@@ -18,9 +18,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const demoAccounts: Record<string, any> = {
-  "etudiant@demo.com": { password: "demo123", name: "Jean Dupont", role: "student" },
+  "etudiant@demo.com": { password: "demo123", name: "Koffi Sènan", role: "student" },
   "professeur@demo.com": { password: "demo123", name: "Charlemagne Babatoundé Igué", role: "professor" },
-  "admin@demo.com": { password: "demo123", name: "Adam Smith", role: "admin" },
+  "admin@demo.com": { password: "demo123", name: "Moussa Soglo", role: "admin" },
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

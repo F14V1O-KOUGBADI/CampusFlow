@@ -122,7 +122,7 @@ function StudentDashboard({ user }: { user: any }) {
               </div>
               <div>
                 <p className="text-xs opacity-70">Professeur</p>
-                <p className="font-bold">Dr. Marie Dubois</p>
+                <p className="font-bold">Dr. Sènan Gnonlonfoun</p>
               </div>
             </div>
           </div>

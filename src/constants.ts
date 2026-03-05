@@ -1,0 +1,22 @@
+export const BENINESE_STUDENTS = [
+  "Flavio Kougbadi", "Arnaud Adjahouin", "Rodrigue Houngnibo", "Marcel Dossou", "Brice Soglo",
+  "Lionel Kpanou", "Serge Agossou", "Patrick Hounkpatin", "Wilfried Koffi", "Junior Adjadohoun",
+  "Armel Tognon", "Kevin Zannou", "Ulrich Houndjo", "Freddy Dossa", "Christian Sossou",
+  "Romuald Hounkonnou", "Maxime Ahouansou", "Alain Gandonou", "Steve Degla", "Herman Hounkpè",
+  "Victor Sètondji", "Fabrice Agbo", "Thierry Tchibozo", "Cédric Houssou", "Jonas Adjinacou",
+  "Arnaud Sinsin", "Landry Hounkponou", "Ghislain Kouton", "Patrick Ahouandjinou", "Serge Hounmenou",
+  "Clarisse Soglo", "Rosine Dossou", "Mireille Adjahouin", "Sandra Hounkpè", "Christelle Zannou",
+  "Nadège Kpanou", "Grâce Tognon", "Cynthia Degla", "Stéphanie Agossou", "Rachel Houndjo",
+  "Prisca Hounkpatin", "Carine Koffi", "Mireille Adjadohoun", "Judith Sossou", "Esther Hounkonnou",
+  "Vanessa Ahouansou", "Chantal Gandonou", "Diane Houngnibo", "Noémie Dossa", "Aurélie Sètondji",
+  "Serge Kouton", "Arnaud Hounkponou", "Fabrice Sinsin", "Marcel Tchibozo", "Brice Agbo",
+  "Lionel Adjinacou", "Kevin Houssou", "Wilfried Degla", "Junior Soglo", "Victor Hounkpè",
+  "Mireille Hounmenou", "Rosine Adjahouin", "Clarisse Kpanou", "Sandra Hounkpatin", "Christelle Zannou",
+  "Nadège Sossou", "Grâce Houngnibo", "Cynthia Dossou", "Stéphanie Agossou", "Rachel Houndjo",
+  "Armel Tognon", "Thierry Ahouansou", "Ghislain Gandonou", "Patrick Adjadohoun", "Serge Hounkonnou",
+  "Landry Sètondji", "Cédric Kouton", "Jonas Hounkponou", "Fabrice Agbo", "Romuald Degla",
+  "Esther Koffi", "Vanessa Soglo", "Judith Zannou", "Diane Hounkpè", "Noémie Dossa",
+  "Aurélie Agossou", "Prisca Tchibozo", "Carine Adjinacou", "Mireille Houssou", "Chantal Sinsin",
+  "Arnaud Houngnibo", "Marcel Hounkpatin", "Brice Kpanou", "Lionel Adjahouin", "Kevin Degla",
+  "Serge Hounmenou", "Victor Soglo", "Junior Koffi", "Wilfried Hounkpè", "Patrick Zannou"
+];

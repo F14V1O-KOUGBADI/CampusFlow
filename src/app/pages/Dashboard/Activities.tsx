@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Plus, X, Calendar, Clock, MapPin, Users, Trash2, AlertCircle } from "lucide-react";
+import { Plus, X, Calendar, Clock, MapPin, Users, Trash2, AlertCircle, UserCheck } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../../../lib/utils";
+import { BENINESE_STUDENTS } from "../../../constants";
 
 interface Activity {
   id: string;
@@ -13,6 +14,7 @@ interface Activity {
   capacity: number;
   enrolled: number;
   description: string;
+  enrolledStudents: string[];
 }
 
 export default function ProfessorActivities() {
@@ -26,7 +28,8 @@ export default function ProfessorActivities() {
       room: "Labo 1",
       capacity: 50,
       enrolled: 45,
-      description: "Introduction à la programmation Arduino."
+      description: "Introduction à la programmation Arduino.",
+      enrolledStudents: BENINESE_STUDENTS.slice(0, 45)
     },
     {
       id: "2",
@@ -37,11 +40,13 @@ export default function ProfessorActivities() {
       room: "Amphi A",
       capacity: 200,
       enrolled: 156,
-      description: "Discussion sur les enjeux de l'IA au Bénin."
+      description: "Discussion sur les enjeux de l'IA au Bénin.",
+      enrolledStudents: [...BENINESE_STUDENTS, ...BENINESE_STUDENTS.slice(0, 56)] // Simulating 156 students
     }
   ]);
 
   const [showModal, setShowModal] = useState(false);
+  const [viewingStudents, setViewingStudents] = useState<Activity | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -63,12 +68,12 @@ export default function ProfessorActivities() {
       room: formData.room,
       capacity: parseInt(formData.capacity),
       enrolled: 0,
-      description: formData.description
+      description: formData.description,
+      enrolledStudents: []
     };
 
     setActivities([newActivity, ...activities]);
     
-    // BUG IMPORTANT #3 FIX: Reset formulaire modal
     setFormData({
       title: "",
       date: "",
@@ -109,14 +114,24 @@ export default function ProfessorActivities() {
             key={activity.id}
             className="bg-surface rounded-[32px] border border-border p-8 shadow-soft group relative"
           >
-            <button 
-              onClick={() => deleteActivity(activity.id)}
-              className="absolute top-6 right-6 p-2 text-text-secondary hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
+            <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+              <button 
+                onClick={() => setViewingStudents(activity)}
+                className="p-2 text-primary hover:bg-primary/10 rounded-xl transition-all"
+                title="Voir les inscrits"
+              >
+                <UserCheck className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={() => deleteActivity(activity.id)}
+                className="p-2 text-text-secondary hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all"
+                title="Supprimer"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
 
-            <h3 className="text-xl font-bold mb-6 pr-10">{activity.title}</h3>
+            <h3 className="text-xl font-bold mb-6 pr-20">{activity.title}</h3>
             
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="flex items-center gap-3 text-sm text-text-secondary">
@@ -137,17 +152,26 @@ export default function ProfessorActivities() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs font-bold uppercase tracking-wider">
-                <span className="text-text-secondary">Remplissage</span>
-                <span className="text-primary">{Math.round((activity.enrolled / activity.capacity) * 100)}%</span>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-bold uppercase tracking-wider">
+                  <span className="text-text-secondary">Remplissage</span>
+                  <span className="text-primary">{Math.round((activity.enrolled / activity.capacity) * 100)}%</span>
+                </div>
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary rounded-full transition-all duration-500" 
+                    style={{ width: `${(activity.enrolled / activity.capacity) * 100}%` }}
+                  ></div>
+                </div>
               </div>
-              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-primary rounded-full transition-all duration-500" 
-                  style={{ width: `${(activity.enrolled / activity.capacity) * 100}%` }}
-                ></div>
-              </div>
+              
+              <button 
+                onClick={() => setViewingStudents(activity)}
+                className="w-full py-3 bg-muted hover:bg-border rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2"
+              >
+                <Users className="w-4 h-4" /> Voir la liste des inscrits
+              </button>
             </div>
           </motion.div>
         ))}
@@ -159,6 +183,68 @@ export default function ProfessorActivities() {
           </div>
         )}
       </div>
+
+      {/* Modal Students List */}
+      <AnimatePresence>
+        {viewingStudents && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setViewingStudents(null)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed inset-x-6 top-[10%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[500px] bg-surface rounded-[40px] shadow-2xl z-[70] overflow-hidden flex flex-col max-h-[80vh]"
+            >
+              <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
+                <div>
+                  <h2 className="text-2xl font-bold">Liste des Inscrits</h2>
+                  <p className="text-sm text-text-secondary">{viewingStudents.title}</p>
+                </div>
+                <button onClick={() => setViewingStudents(null)} className="p-2 hover:bg-muted rounded-xl transition-colors">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs font-bold uppercase tracking-widest text-text-secondary">Étudiant</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-text-secondary">Statut</span>
+                </div>
+                <div className="space-y-4">
+                  {viewingStudents.enrolledStudents.length > 0 ? (
+                    viewingStudents.enrolledStudents.map((student, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl border border-border/50">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs">
+                            {student.split(" ").map(n => n[0]).join("")}
+                          </div>
+                          <span className="font-bold text-sm">{student}</span>
+                        </div>
+                        <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-widest rounded-full">Inscrit</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-10">
+                      <Users className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-20" />
+                      <p className="text-text-secondary">Aucun étudiant inscrit pour le moment.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="p-6 border-t border-border bg-muted/30 text-center">
+                <p className="text-xs text-text-secondary font-medium">Total: {viewingStudents.enrolledStudents.length} étudiants</p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Modal Creation */}
       <AnimatePresence>

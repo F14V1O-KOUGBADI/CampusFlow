@@ -412,7 +412,7 @@ function DashboardMockup() {
     <div className="h-full flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs">JD</div>
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs">KS</div>
           <div className="h-2 w-24 bg-muted rounded-full" />
         </div>
         <div className="w-8 h-8 bg-muted rounded-lg" />

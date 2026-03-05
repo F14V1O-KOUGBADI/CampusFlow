@@ -40,7 +40,7 @@ export default function RegisterStep5() {
               required
               value={data.fullName}
               onChange={e => updateAccountInfo({ fullName: e.target.value })}
-              placeholder="Jean Dupont"
+              placeholder="Koffi Sènan"
               className="w-full pl-12 pr-4 py-4 bg-muted rounded-xl border-2 border-transparent focus:border-primary focus:bg-surface outline-none transition-all"
             />
           </div>
