@@ -88,7 +88,7 @@ function StudentDashboard({ user }: { user: any }) {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-[#1E40AF] to-[#3B82F6] rounded-[32px] p-8 text-white shadow-lg relative overflow-hidden"
+        className="bg-gradient-to-r from-[#2563EB] to-[#60A5FA] rounded-[32px] p-8 text-white shadow-lg relative overflow-hidden"
       >
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-6">

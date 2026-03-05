@@ -3,7 +3,7 @@
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   
-  --color-primary: #1E40AF;
+  --color-primary: #2563EB;
   --color-primary-foreground: #FFFFFF;
   --color-primary-50: #EFF6FF;
   --color-primary-100: #DBEAFE;
@@ -12,23 +12,23 @@
   --color-secondary-foreground: #FFFFFF;
   --color-success: #10B981;
 
-  --color-accent: #9333EA;
-  --color-info: #3B82F6;
+  --color-accent: #F97316;
+  --color-info: #2563EB;
 
   --color-background: #F8FAFC;
   --color-foreground: #0F172A;
-  --color-text-secondary: #64748B;
+  --color-text-secondary: #475569;
   --color-surface: #FFFFFF;
   --color-border: #E2E8F0;
   --color-muted: #F1F5F9;
-  --color-muted-foreground: #64748B;
+  --color-muted-foreground: #475569;
   --color-destructive: #EF4444;
   --color-input: #E2E8F0;
   --color-input-background: #FFFFFF;
 
   --color-sidebar: #FFFFFF;
-  --color-sidebar-primary: #1E40AF;
-  --color-sidebar-accent: #EFF6FF;
+  --color-sidebar-primary: #3498DB;
+  --color-sidebar-accent: #EBF5FB;
 
   --radius-sm: 8px;
   --radius-md: 16px;
