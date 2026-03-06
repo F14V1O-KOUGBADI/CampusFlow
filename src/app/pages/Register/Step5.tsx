@@ -26,12 +26,12 @@ export default function RegisterStep5() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const success = await register(data);
+    const { success, error: regError } = await register(data);
     setLoading(false);
     if (success) {
       navigate("/register/success");
     } else {
-      setError("Une erreur est survenue lors de la création du compte.");
+      setError(regError || "Une erreur est survenue lors de la création du compte.");
     }
   };
 

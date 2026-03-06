@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Sun, Moon } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 import { cn } from "../../lib/utils";
 
 interface RegistrationLayoutProps {
@@ -13,6 +14,7 @@ interface RegistrationLayoutProps {
 
 export default function RegistrationLayout({ children, step, title, subtitle, onBack }: RegistrationLayoutProps) {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-background flex flex-col p-6">
@@ -24,9 +26,18 @@ export default function RegistrationLayout({ children, step, title, subtitle, on
           <span className="text-xl font-bold tracking-tight">CampusFlow</span>
         </div>
         
-        <Link to="/login" className="text-sm font-bold text-text-secondary hover:text-primary transition-colors">
-          Déjà un compte ?
-        </Link>
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={toggleTheme}
+            className="p-2 text-text-secondary hover:text-primary transition-colors"
+            title="Changer de thème"
+          >
+            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          </button>
+          <Link to="/login" className="text-sm font-bold text-text-secondary hover:text-primary transition-colors">
+            Déjà un compte ?
+          </Link>
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center py-12">

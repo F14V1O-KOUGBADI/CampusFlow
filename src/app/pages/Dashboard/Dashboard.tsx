@@ -1,9 +1,10 @@
-import { Bell, Clock, MapPin, User, TrendingUp, BookOpen, Users, Plus, Calendar, X } from "lucide-react";
+import { Bell, Clock, MapPin, User, TrendingUp, BookOpen, Users, Plus, Calendar, X, ClipboardList } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../../../lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Compositions from "./Compositions";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -65,7 +66,7 @@ function StudentDashboard({ user }: { user: any }) {
   const [showNotifications, setShowNotifications] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <header className="flex items-center justify-between relative">
         <div>
           <h1 className="text-3xl font-bold">Bonjour, {user.name.split(" ")[0]} 👋</h1>
@@ -82,61 +83,66 @@ function StudentDashboard({ user }: { user: any }) {
           <NotificationDropdown isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
         </div>
       </header>
-      {/* ... rest of StudentDashboard remains the same ... */}
+
+      {/* Compositions Section */}
+      <Compositions />
 
       {/* Current Course Card */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-[#2563EB] to-[#60A5FA] rounded-[32px] p-8 text-white shadow-lg relative overflow-hidden"
-      >
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs font-bold uppercase tracking-widest opacity-80">Cours Actuel</span>
+      <div className="space-y-6">
+        <h3 className="text-2xl font-bold">Cours en direct</h3>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-[#2563EB] to-[#60A5FA] rounded-[32px] p-8 text-white shadow-lg relative overflow-hidden"
+        >
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-xs font-bold uppercase tracking-widest opacity-80">En ce moment</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-8">Mathématiques Avancées</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs opacity-70">Horaire</p>
+                  <p className="font-bold">08:00 - 10:00</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs opacity-70">Salle</p>
+                  <p className="font-bold">A-203</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <User className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs opacity-70">Professeur</p>
+                  <p className="font-bold">Dr. Sènan Gnonlonfoun</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h2 className="text-3xl font-bold mb-8">Mathématiques Avancées</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-xs opacity-70">Horaire</p>
-                <p className="font-bold">08:00 - 10:00</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                <MapPin className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-xs opacity-70">Salle</p>
-                <p className="font-bold">A-203</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                <User className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-xs opacity-70">Professeur</p>
-                <p className="font-bold">Dr. Sènan Gnonlonfoun</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Decorative Circles */}
-        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[-20%] left-[-5%] w-48 h-48 bg-white/5 rounded-full blur-2xl"></div>
-      </motion.div>
+          {/* Decorative Circles */}
+          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-[-20%] left-[-5%] w-48 h-48 bg-white/5 rounded-full blur-2xl"></div>
+        </motion.div>
+      </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-10">
         {/* Next Courses */}
         <div className="lg:col-span-2 space-y-6">
-          <h3 className="text-xl font-bold">Prochains Cours</h3>
+          <h3 className="text-2xl font-bold">Prochains Cours</h3>
           <div className="space-y-4">
             <NextCourseItem 
               time="10:30" 
@@ -161,7 +167,7 @@ function StudentDashboard({ user }: { user: any }) {
 
         {/* Stats Grid */}
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Statistiques</h3>
+          <h3 className="text-2xl font-bold">Statistiques</h3>
           <div className="grid gap-4">
             <StatCard 
               title="Moyenne Générale" 
@@ -198,7 +204,7 @@ function ProfessorDashboard({ user }: { user: any }) {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <header className="flex items-center justify-between relative">
         <div>
           <h1 className="text-3xl font-bold">Bonjour, Prof. {user.name.split(" ").pop()} 👋</h1>
@@ -216,55 +222,62 @@ function ProfessorDashboard({ user }: { user: any }) {
         </div>
       </header>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Compositions Section */}
+      <Compositions />
+
+      <div className="grid md:grid-cols-2 gap-8">
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate("/dashboard/activities")}
-          className="p-8 bg-gradient-to-br from-primary to-primary/80 rounded-[32px] text-white text-left shadow-lg"
+          className="p-10 bg-gradient-to-br from-primary to-primary/80 rounded-[32px] text-white text-left shadow-lg flex flex-col items-start gap-6"
         >
-          <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6">
-            <Plus className="w-6 h-6" />
+          <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+            <Plus className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold mb-2">Nouveau Cours</h3>
-          <p className="text-primary-100 text-sm">Gérez vos cours et supports pour vos étudiants.</p>
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold">Nouveau Cours</h3>
+            <p className="text-primary-100 text-sm leading-relaxed">Gérez vos cours et supports pour vos étudiants.</p>
+          </div>
         </motion.button>
         
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate("/dashboard/schedule")}
-          className="p-8 bg-gradient-to-br from-secondary to-secondary/80 rounded-[32px] text-white text-left shadow-lg"
+          className="p-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-[32px] text-white text-left shadow-lg flex flex-col items-start gap-6"
         >
-          <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6">
-            <Calendar className="w-6 h-6" />
+          <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+            <Calendar className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold mb-2">Mon Planning</h3>
-          <p className="text-emerald-100 text-sm">Consultez votre emploi du temps hebdomadaire.</p>
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold">Mon Planning</h3>
+            <p className="text-emerald-100 text-sm leading-relaxed">Consultez votre emploi du temps hebdomadaire.</p>
+          </div>
         </motion.button>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <h3 className="text-xl font-bold">Prochains Cours</h3>
+      <div className="grid lg:grid-cols-2 gap-10">
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold">Prochains Cours</h3>
           <div className="space-y-4">
             <NextCourseItem 
               time="10:30" 
               title="Programmation Web Avancée" 
               room="B-105" 
-              professor="120 étudiants" 
+              professor="120 étudiants inscrits" 
             />
             <NextCourseItem 
               time="14:00" 
               title="Base de Données" 
               room="C-201" 
-              professor="85 étudiants" 
+              professor="85 étudiants inscrits" 
             />
           </div>
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Cours Récents</h3>
+          <h3 className="text-2xl font-bold">Cours Récents</h3>
           <div className="space-y-4">
             <ActivityProgressCard title="Mathématiques Avancées" enrolled={120} capacity={150} />
             <ActivityProgressCard title="Programmation Web" enrolled={85} capacity={100} />

@@ -10,8 +10,8 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (data: any) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (data: any) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   loading: boolean;
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -50,15 +50,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data);
-        return true;
+        return { success: true };
+      } else {
+        const data = await res.json();
+        return { success: false, error: data.error || "Identifiants invalides" };
       }
     } catch (error) {
       console.error("Login failed", error);
+      return { success: false, error: "Une erreur réseau est survenue" };
     }
-    return false;
   };
 
-  const register = async (registrationData: any): Promise<boolean> => {
+  const register = async (registrationData: any): Promise<{ success: boolean; error?: string }> => {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -68,12 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data);
-        return true;
+        return { success: true };
+      } else {
+        const data = await res.json();
+        return { success: false, error: data.error || "La création du compte a échoué" };
       }
     } catch (error) {
       console.error("Registration failed", error);
+      return { success: false, error: "Une erreur réseau est survenue" };
     }
-    return false;
   };
 
   const logout = async () => {

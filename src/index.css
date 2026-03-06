@@ -41,37 +41,46 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0/0.05);
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
+  :root {
+    --color-background: #F8FAFC;
+    --color-foreground: #0F172A;
+    --color-text-secondary: #475569;
+    --color-surface: #FFFFFF;
+    --color-border: #E2E8F0;
+    --color-muted: #F1F5F9;
+    --color-muted-foreground: #475569;
+    --color-input-background: #FFFFFF;
+    --color-sidebar: #FFFFFF;
   }
-  
-  h1 { @apply text-[40px] font-bold tracking-tight; }
-  h2 { @apply text-[32px] font-bold tracking-tight; }
-  h3 { @apply text-[24px] font-semibold; }
-  
+
   .dark {
     --color-background: #0F172A;
     --color-foreground: #F8FAFC;
-    --color-card: #1E293B;
+    --color-text-secondary: #94A3B8;
+    --color-surface: #1E293B;
+    --color-border: #334155;
     --color-muted: #334155;
     --color-muted-foreground: #94A3B8;
-    --color-border: #334155;
-    --color-surface: #1E293B;
-    --color-sidebar: #1E293B;
     --color-input-background: #0F172A;
+    --color-sidebar: #1E293B;
+    --color-primary-50: rgba(37, 99, 235, 0.1);
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
+    @apply bg-surface/80 backdrop-blur-xl;
   }
   
   .glass-dark {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(12px);
+    @apply bg-surface/80 backdrop-blur-xl;
   }
 
   .animate-marquee {

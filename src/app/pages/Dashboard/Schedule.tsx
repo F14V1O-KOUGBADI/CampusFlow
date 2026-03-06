@@ -6,11 +6,11 @@ const scheduleData: Record<string, any[]> = {
   "Lundi": [
     { code: "INF301", title: "Maths Avancées", time: "08:00-10:00", room: "A-203", type: "course" },
     { code: "INF302", title: "Physique", time: "10:30-12:30", room: "B-105", type: "course" },
-    { code: "ACT101", title: "Club Robotique", time: "14:00-16:00", room: "Labo 1", type: "activity" },
+    { code: "INF309", title: "Algèbre Linéaire", time: "14:00-16:00", room: "Labo 1", type: "course" },
   ],
   "Mardi": [
     { code: "INF303", title: "Programmation", time: "09:00-11:00", room: "C-301", type: "course" },
-    { code: "ACT102", title: "Entrepreneuriat", time: "13:00-15:00", room: "Amphi B", type: "activity" },
+    { code: "INF310", title: "Systèmes d'Exploitation", time: "13:00-15:00", room: "Amphi B", type: "course" },
   ],
   "Mercredi": [
     { code: "INF304", title: "Base de Données", time: "08:00-10:00", room: "C-201", type: "course" },
@@ -18,7 +18,7 @@ const scheduleData: Record<string, any[]> = {
   ],
   "Jeudi": [
     { code: "INF306", title: "IA", time: "09:00-12:00", room: "A-301", type: "course" },
-    { code: "ACT103", title: "Leadership", time: "14:00-16:00", room: "Salle 5", type: "activity" },
+    { code: "INF311", title: "Probabilités", time: "14:00-16:00", room: "Salle 5", type: "course" },
   ],
   "Vendredi": [
     { code: "INF307", title: "Réseaux", time: "08:00-10:00", room: "C-104", type: "course" },
@@ -147,22 +147,12 @@ export default function Schedule() {
 }
 
 function ScheduleCard({ item }: { item: any }) {
-  const isActivity = item.type === "activity";
-  
   return (
-    <div className={cn(
-      "p-4 rounded-2xl border-2 transition-all hover:scale-[1.02]",
-      isActivity 
-        ? "bg-accent/5 border-accent/20 text-accent" 
-        : "bg-primary/5 border-primary/20 text-primary"
-    )}>
+    <div className="p-4 rounded-2xl border-2 bg-primary/5 border-primary/20 text-primary transition-all hover:scale-[1.02]">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">{item.code}</span>
-        <span className={cn(
-          "px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest",
-          isActivity ? "bg-accent/10" : "bg-primary/10"
-        )}>
-          {isActivity ? "Activité" : "Cours"}
+        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-primary/10">
+          Cours
         </span>
       </div>
       <h4 className="font-bold text-sm mb-3 leading-tight text-foreground">{item.title}</h4>

@@ -1,8 +1,8 @@
 import { Download, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const gradesData = [
+const mockGrades = [
   { code: "INF301", title: "Mathématiques Avancées", grade: 16, type: "Examen Final", credits: 4 },
   { code: "INF302", title: "Physique Quantique", grade: 18, type: "Projet", credits: 3 },
   { code: "INF303", title: "Programmation Avancée", grade: 14, type: "TP", credits: 5 },
@@ -16,6 +16,32 @@ const gradesData = [
 export default function Grades() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [realGrades, setRealGrades] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGrades = async () => {
+      try {
+        const res = await fetch("/api/my-grades");
+        if (res.ok) {
+          const data = await res.json();
+          setRealGrades(data.map((g: any) => ({
+            code: "COMP",
+            title: g.title,
+            grade: g.grade,
+            type: "Composition",
+            credits: 2,
+            professor: g.professor_name
+          })));
+        }
+      } catch (error) {
+        console.error("Failed to fetch grades", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGrades();
+  }, []);
 
   const handleDownload = () => {
     setIsDownloading(true);
@@ -26,10 +52,12 @@ export default function Grades() {
     }, 2000);
   };
 
+  const allGrades = [...mockGrades, ...realGrades];
+
   // BUG CRITIQUE #1 FIX: Calcul moyenne pondérée réel
-  const totalCredits = gradesData.reduce((acc, g) => acc + g.credits, 0);
-  const weightedSum = gradesData.reduce((acc, g) => acc + g.grade * g.credits, 0);
-  const weightedAverage = weightedSum / totalCredits;
+  const totalCredits = allGrades.reduce((acc, g) => acc + g.credits, 0);
+  const weightedSum = allGrades.reduce((acc, g) => acc + g.grade * g.credits, 0);
+  const weightedAverage = totalCredits > 0 ? weightedSum / totalCredits : 0;
 
   return (
     <div className="space-y-8 relative">
@@ -82,7 +110,7 @@ export default function Grades() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {gradesData.map((grade, i) => (
+              {allGrades.map((grade, i) => (
                 <tr key={i} className="hover:bg-muted/30 transition-colors">
                   <td className="px-8 py-6 font-bold text-primary text-sm">{grade.code}</td>
                   <td className="px-8 py-6 font-bold text-sm">{grade.title}</td>

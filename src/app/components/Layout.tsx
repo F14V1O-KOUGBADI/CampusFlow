@@ -10,14 +10,18 @@ import {
   Menu, 
   X, 
   User as UserIcon,
-  ChevronRight
+  ChevronRight,
+  Sun,
+  Moon
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function Layout() {
   const { user, logout, isAuthenticated } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,6 +57,7 @@ export default function Layout() {
     : [
         { label: "Accueil", icon: LayoutDashboard, path: "/dashboard" },
         { label: "Planning", icon: Calendar, path: "/dashboard/schedule" },
+        { label: "Compositions", icon: Plus, path: "/dashboard/activities" },
         { label: "Notes", icon: GraduationCap, path: "/dashboard/grades" },
       ];
 
@@ -88,6 +93,13 @@ export default function Layout() {
         </nav>
 
         <div className="p-4 border-t border-border">
+          <button 
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-text-secondary hover:bg-muted hover:text-foreground transition-all mb-2"
+          >
+            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            Mode {theme === "light" ? "Sombre" : "Clair"}
+          </button>
           <button 
             onClick={() => setShowSettings(true)}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-text-secondary hover:bg-muted hover:text-foreground transition-all mb-2"
