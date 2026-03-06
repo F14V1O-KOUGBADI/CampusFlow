@@ -73,10 +73,37 @@ db.exec(`
 `);
 
 // Seed demo accounts if they don't exist
-const seed = db.prepare("INSERT OR IGNORE INTO users (id, email, password, name, role) VALUES (?, ?, ?, ?, ?)");
-seed.run("1", "etudiant@demo.com", "demo123", "Koffi Sènan", "student");
-seed.run("2", "professeur@demo.com", "demo123", "Charlemagne Babatoundé Igué", "professor");
-seed.run("3", "admin@demo.com", "demo123", "Moussa Soglo", "admin");
+const seed = db.prepare("INSERT OR IGNORE INTO users (id, email, password, name, role, university, field) VALUES (?, ?, ?, ?, ?, ?, ?)");
+const uac = JSON.stringify({ name: "Université d'Abomey-Calavi (UAC)", id: "uac" });
+const info = JSON.stringify({ name: "Informatique", id: "info" });
+
+seed.run("1", "etudiant@demo.com", "demo123", "Koffi Sènan", "student", uac, info);
+seed.run("2", "professeur@demo.com", "demo123", "Charlemagne Babatoundé Igué", "professor", uac, info);
+seed.run("3", "admin@demo.com", "demo123", "Moussa Soglo", "admin", null, null);
+
+// Seed some activities for the demo professor
+const seedActivity = db.prepare(`
+  INSERT OR IGNORE INTO activities (id, title, description, date, time, timeEnd, room, capacity, professor_id, professor_name, university, field) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+const today = new Date().toISOString().split('T')[0];
+const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+seedActivity.run("act1", "Algorithmique et Structure de Données", "Introduction aux listes chaînées et arbres binaires.", yesterday, "08:00", "10:00", "Amphi Ouattara", 500, "2", "Charlemagne Babatoundé Igué", "Université d'Abomey-Calavi (UAC)", "Informatique");
+seedActivity.run("act2", "Systèmes d'Exploitation", "Gestion des processus et ordonnancement.", today, "10:30", "12:30", "Salle G1", 100, "2", "Charlemagne Babatoundé Igué", "Université d'Abomey-Calavi (UAC)", "Informatique");
+seedActivity.run("act3", "Réseaux Informatiques", "Modèle OSI et protocoles TCP/IP.", tomorrow, "14:00", "16:00", "Amphi UEMOA", 300, "2", "Charlemagne Babatoundé Igué", "Université d'Abomey-Calavi (UAC)", "Informatique");
+
+// Seed some compositions
+const seedComp = db.prepare("INSERT OR IGNORE INTO compositions (id, title, description, date, room, professor_id) VALUES (?, ?, ?, ?, ?, ?)");
+seedComp.run("comp1", "Examen Partiel - Programmation C", "Examen de mi-parcours couvrant les pointeurs et la gestion mémoire.", tomorrow, "Amphi Idriss Deby", "2");
+seedComp.run("comp2", "Examen Final - Base de Données", "Examen final sur SQL et la normalisation.", "2026-03-15", "Amphi B750", "2");
+
+// Seed some registrations and grades for the student
+const seedReg = db.prepare("INSERT OR IGNORE INTO composition_registrations (composition_id, student_id, grade) VALUES (?, ?, ?)");
+seedReg.run("comp1", "1", 14.5);
+seedReg.run("comp2", "1", null);
 
 async function startServer() {
   const app = express();
