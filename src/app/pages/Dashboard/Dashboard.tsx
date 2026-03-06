@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../../../lib/utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Compositions from "./Compositions";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -83,9 +82,6 @@ function StudentDashboard({ user }: { user: any }) {
           <NotificationDropdown isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
         </div>
       </header>
-
-      {/* Compositions Section */}
-      <Compositions />
 
       {/* Current Course Card */}
       <div className="space-y-6">
@@ -221,9 +217,6 @@ function ProfessorDashboard({ user }: { user: any }) {
           <NotificationDropdown isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
         </div>
       </header>
-
-      {/* Compositions Section */}
-      <Compositions />
 
       <div className="grid md:grid-cols-2 gap-8">
         <motion.button 

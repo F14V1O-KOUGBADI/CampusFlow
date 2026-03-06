@@ -105,7 +105,7 @@ export default function Compositions() {
           <ClipboardList className="w-7 h-7 text-primary" />
           Compositions
         </h3>
-        {user?.role === "professor" && compositions.length > 0 && (
+        {user?.role === "professor" && (
           <button
             onClick={() => setShowCreateModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-2xl text-sm font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-primary/20"

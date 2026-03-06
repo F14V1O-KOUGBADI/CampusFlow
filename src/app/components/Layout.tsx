@@ -12,7 +12,8 @@ import {
   User as UserIcon,
   ChevronRight,
   Sun,
-  Moon
+  Moon,
+  ClipboardList
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -53,11 +54,12 @@ export default function Layout() {
         { label: "Accueil", icon: LayoutDashboard, path: "/dashboard" },
         { label: "Planning", icon: Calendar, path: "/dashboard/schedule" },
         { label: "Cours", icon: Plus, path: "/dashboard/activities" },
+        { label: "Compositions", icon: ClipboardList, path: "/dashboard/compositions" },
       ]
     : [
         { label: "Accueil", icon: LayoutDashboard, path: "/dashboard" },
         { label: "Planning", icon: Calendar, path: "/dashboard/schedule" },
-        { label: "Compositions", icon: Plus, path: "/dashboard/activities" },
+        { label: "Compositions", icon: ClipboardList, path: "/dashboard/compositions" },
         { label: "Notes", icon: GraduationCap, path: "/dashboard/grades" },
       ];
 

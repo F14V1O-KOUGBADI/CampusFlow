@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Schedule from "./pages/Dashboard/Schedule";
 import Grades from "./pages/Dashboard/Grades";
 import ProfessorActivities from "./pages/Dashboard/Activities";
+import Compositions from "./pages/Dashboard/Compositions";
 import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
       { path: "schedule", element: <Schedule /> },
       { path: "grades", element: <Grades /> },
       { path: "activities", element: <ProfessorActivities /> },
+      { path: "compositions", element: <Compositions /> },
     ],
   },
   { path: "*", element: <NotFound /> },
