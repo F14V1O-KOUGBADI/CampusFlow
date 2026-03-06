@@ -30,10 +30,18 @@ db.exec(`
     title TEXT,
     description TEXT,
     date TEXT,
+    room TEXT,
     professor_id TEXT,
     FOREIGN KEY(professor_id) REFERENCES users(id)
   )
 `);
+
+// Migration: Add room column if it doesn't exist
+try {
+  db.exec("ALTER TABLE compositions ADD COLUMN room TEXT");
+} catch (e) {
+  // Column already exists
+}
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS composition_registrations (
@@ -43,6 +51,24 @@ db.exec(`
     PRIMARY KEY (composition_id, student_id),
     FOREIGN KEY(composition_id) REFERENCES compositions(id),
     FOREIGN KEY(student_id) REFERENCES users(id)
+  )
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS activities (
+    id TEXT PRIMARY KEY,
+    title TEXT,
+    description TEXT,
+    date TEXT,
+    time TEXT,
+    timeEnd TEXT,
+    room TEXT,
+    capacity INTEGER,
+    professor_id TEXT,
+    professor_name TEXT,
+    university TEXT,
+    field TEXT,
+    FOREIGN KEY(professor_id) REFERENCES users(id)
   )
 `);
 
@@ -95,7 +121,13 @@ async function startServer() {
         field ? JSON.stringify(field) : null
       );
       
-      const user = { id, email, name: fullName, role };
+      const user = { 
+        id, 
+        email, 
+        name: fullName, 
+        role, 
+        university: university ? university.name : null 
+      };
       res.cookie("user", JSON.stringify(user), { 
         httpOnly: true, 
         secure: true, 
@@ -114,7 +146,14 @@ async function startServer() {
     const user = db.prepare("SELECT * FROM users WHERE email = ? AND password = ?").get(email, password) as any;
     
     if (user) {
-      const userData = { id: user.id, email: user.email, name: user.name, role: user.role };
+      const university = user.university ? JSON.parse(user.university).name : null;
+      const userData = { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name, 
+        role: user.role,
+        university
+      };
       res.cookie("user", JSON.stringify(userData), { 
         httpOnly: true, 
         secure: true, 
@@ -148,12 +187,12 @@ async function startServer() {
       return res.status(403).json({ error: "Seuls les professeurs peuvent créer des compositions" });
     }
 
-    const { title, description, date } = req.body;
+    const { title, description, date, room } = req.body;
     const id = Math.random().toString(36).substring(2, 15);
     try {
-      const stmt = db.prepare("INSERT INTO compositions (id, title, description, date, professor_id) VALUES (?, ?, ?, ?, ?)");
-      stmt.run(id, title, description, date, user.id);
-      res.json({ id, title, description, date, professor_id: user.id });
+      const stmt = db.prepare("INSERT INTO compositions (id, title, description, date, room, professor_id) VALUES (?, ?, ?, ?, ?, ?)");
+      stmt.run(id, title, description, date, room, user.id);
+      res.json({ id, title, description, date, room, professor_id: user.id });
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la création de la composition" });
     }
@@ -248,6 +287,137 @@ async function startServer() {
       res.json(grades);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des notes" });
+    }
+  });
+
+  // Activity Routes
+  app.post("/api/activities", (req, res) => {
+    const user = getAuthUser(req);
+    if (!user || user.role !== "professor") {
+      return res.status(403).json({ error: "Seuls les professeurs peuvent créer des cours" });
+    }
+
+    const { title, description, date, time, timeEnd, room, capacity } = req.body;
+    const id = Math.random().toString(36).substring(2, 15);
+    
+    // Get full user info for field and university
+    const fullUser = db.prepare("SELECT university, field FROM users WHERE id = ?").get(user.id) as any;
+    const university = fullUser.university ? JSON.parse(fullUser.university).name : null;
+    const field = fullUser.field ? JSON.parse(fullUser.field).name : null;
+
+    try {
+      const stmt = db.prepare(`
+        INSERT INTO activities (id, title, description, date, time, timeEnd, room, capacity, professor_id, professor_name, university, field) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      stmt.run(id, title, description, date, time, timeEnd, room, capacity, user.id, user.name, university, field);
+      res.json({ id, title, description, date, time, timeEnd, room, capacity });
+    } catch (error) {
+      console.error("Activity creation error:", error);
+      res.status(500).json({ error: "Erreur lors de la création du cours" });
+    }
+  });
+
+  app.get("/api/activities", (req, res) => {
+    const user = getAuthUser(req);
+    if (!user || user.role !== "professor") {
+      return res.status(403).json({ error: "Accès refusé" });
+    }
+
+    try {
+      const activities = db.prepare("SELECT * FROM activities WHERE professor_id = ? ORDER BY date DESC, time DESC").all(user.id);
+      res.json(activities);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération des cours" });
+    }
+  });
+
+  app.get("/api/activities/recent", (req, res) => {
+    const user = getAuthUser(req);
+    if (!user) return res.status(401).json({ error: "Non connecté" });
+
+    // Get user's field and university
+    const fullUser = db.prepare("SELECT university, field FROM users WHERE id = ?").get(user.id) as any;
+    const university = fullUser.university ? JSON.parse(fullUser.university).name : null;
+    const field = fullUser.field ? JSON.parse(fullUser.field).name : null;
+
+    if (!field || !university) {
+        return res.json([]);
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    try {
+      // Recent activities: same field and university, date <= today
+      const activities = db.prepare(`
+        SELECT * FROM activities 
+        WHERE field = ? AND university = ? AND date <= ?
+        ORDER BY date DESC, time DESC
+        LIMIT 10
+      `).all(field, university, today);
+      res.json(activities);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération des cours récents" });
+    }
+  });
+
+  app.put("/api/activities/:id", (req, res) => {
+    const user = getAuthUser(req);
+    if (!user || user.role !== "professor") {
+      return res.status(403).json({ error: "Accès refusé" });
+    }
+
+    const { title, description, date, time, timeEnd, room, capacity } = req.body;
+    const activityId = req.params.id;
+
+    try {
+      // Check ownership
+      const activity = db.prepare("SELECT professor_id, date FROM activities WHERE id = ?").get(activityId) as any;
+      if (!activity) return res.status(404).json({ error: "Cours non trouvé" });
+      if (activity.professor_id !== user.id) return res.status(403).json({ error: "Vous ne pouvez modifier que vos propres cours" });
+
+      // Check if not yet taught (date >= today)
+      const today = new Date().toISOString().split('T')[0];
+      if (activity.date < today) {
+          return res.status(400).json({ error: "Vous ne pouvez pas modifier un cours déjà dispensé" });
+      }
+
+      const stmt = db.prepare(`
+        UPDATE activities 
+        SET title = ?, description = ?, date = ?, time = ?, timeEnd = ?, room = ?, capacity = ?
+        WHERE id = ?
+      `);
+      stmt.run(title, description, date, time, timeEnd, room, capacity, activityId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la modification du cours" });
+    }
+  });
+
+  app.delete("/api/activities/:id", (req, res) => {
+    const user = getAuthUser(req);
+    if (!user || user.role !== "professor") {
+      return res.status(403).json({ error: "Accès refusé" });
+    }
+
+    const activityId = req.params.id;
+
+    try {
+      // Check ownership
+      const activity = db.prepare("SELECT professor_id, date FROM activities WHERE id = ?").get(activityId) as any;
+      if (!activity) return res.status(404).json({ error: "Cours non trouvé" });
+      if (activity.professor_id !== user.id) return res.status(403).json({ error: "Vous ne pouvez supprimer que vos propres cours" });
+
+      // Check if not yet taught
+      const today = new Date().toISOString().split('T')[0];
+      if (activity.date < today) {
+          return res.status(400).json({ error: "Vous ne pouvez pas supprimer un cours déjà dispensé" });
+      }
+
+      db.prepare("DELETE FROM activities WHERE id = ?").run(activityId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la suppression du cours" });
     }
   });
 

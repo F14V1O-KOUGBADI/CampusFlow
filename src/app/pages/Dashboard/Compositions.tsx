@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Calendar, Users, CheckCircle, X, Loader2, ClipboardList } from "lucide-react";
+import { Plus, Calendar, Users, CheckCircle, X, Loader2, ClipboardList, MapPin, Search } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../context/AuthContext";
+import { UNIVERSITY_ROOMS } from "../../../constants/rooms";
 
 interface Composition {
   id: string;
   title: string;
   description: string;
   date: string;
+  room?: string;
   professor_name: string;
   student_count: number;
   my_grade: number | null;
@@ -142,6 +144,12 @@ export default function Compositions() {
                   <Calendar className="w-4 h-4 text-primary/60" />
                   {new Date(comp.date).toLocaleDateString("fr-FR")}
                 </div>
+                {comp.room && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary/60" />
+                    {comp.room}
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-primary/60" />
                   {comp.student_count} inscrits
@@ -222,8 +230,16 @@ export default function Compositions() {
 }
 
 function CreateModal({ onClose, onCreated }: { onClose: () => void, onCreated: () => void }) {
-  const [formData, setFormData] = useState({ title: "", description: "", date: "" });
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({ title: "", description: "", date: "", room: "" });
   const [loading, setLoading] = useState(false);
+  const [roomSearch, setRoomSearch] = useState("");
+  const [showRoomDropdown, setShowRoomDropdown] = useState(false);
+
+  const universityRooms = UNIVERSITY_ROOMS.find(u => u.university === user?.university)?.rooms || [];
+  const filteredRooms = universityRooms.filter(room => 
+    room.toLowerCase().includes(roomSearch.toLowerCase())
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,6 +315,63 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void, onCreated: (
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
+            </div>
+            <div className="relative">
+              <label className="block text-sm font-bold mb-2">Salle</label>
+              <div className="relative">
+                <input
+                  required
+                  type="text"
+                  value={formData.room}
+                  onFocus={() => setShowRoomDropdown(true)}
+                  onChange={(e) => {
+                    setFormData({ ...formData, room: e.target.value });
+                    setRoomSearch(e.target.value);
+                    setShowRoomDropdown(true);
+                  }}
+                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all pr-10"
+                  placeholder="Rechercher une salle..."
+                />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary pointer-events-none" />
+              </div>
+
+              <AnimatePresence>
+                {showRoomDropdown && (universityRooms.length > 0) && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-[60]" 
+                      onClick={() => setShowRoomDropdown(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute left-0 right-0 top-full mt-2 bg-surface border border-border rounded-2xl shadow-xl z-[70] max-h-48 overflow-y-auto"
+                    >
+                      {filteredRooms.length > 0 ? (
+                        filteredRooms.map((room, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => {
+                              setFormData({...formData, room});
+                              setRoomSearch(room);
+                              setShowRoomDropdown(false);
+                            }}
+                            className="w-full px-5 py-3 text-left text-sm hover:bg-muted transition-colors border-b border-border last:border-0"
+                          >
+                            {room}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-5 py-3 text-sm text-text-secondary italic">
+                          Aucune salle trouvée.
+                        </div>
+                      )}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
             <button
               disabled={loading}

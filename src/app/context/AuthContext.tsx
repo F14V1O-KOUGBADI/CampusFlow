@@ -3,9 +3,11 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 export type UserRole = "student" | "professor" | "admin";
 
 export interface User {
+  id: string;
   name: string;
   email: string;
   role: UserRole | null;
+  university?: string;
 }
 
 interface AuthContextType {

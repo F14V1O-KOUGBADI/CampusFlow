@@ -1,8 +1,8 @@
-import { Bell, Clock, MapPin, User, TrendingUp, BookOpen, Users, Plus, Calendar, X, ClipboardList } from "lucide-react";
+import { Bell, Clock, MapPin, User, TrendingUp, BookOpen, Users, Plus, Calendar, X, ClipboardList, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../../../lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
@@ -143,19 +143,19 @@ function StudentDashboard({ user }: { user: any }) {
             <NextCourseItem 
               time="10:30" 
               title="Programmation Web Avancée" 
-              room="B-105" 
+              room="Salle G1" 
               professor="Prof. Félicien Avlessi" 
             />
             <NextCourseItem 
               time="14:00" 
               title="Base de Données" 
-              room="C-201" 
+              room="Amphi B750" 
               professor="Dr. Mohamed N. Baco" 
             />
             <NextCourseItem 
               time="16:00" 
               title="Intelligence Artificielle" 
-              room="A-301" 
+              room="Amphi UEMOA" 
               professor="Dr. Eléonore Yayi Ladekan" 
             />
           </div>
@@ -179,14 +179,6 @@ function StudentDashboard({ user }: { user: any }) {
               color="bg-primary" 
               icon={<BookOpen className="w-5 h-5 text-primary" />}
             />
-            <StatCard 
-              title="Cours Validés" 
-              value="12" 
-              subtitle="Semestre en cours"
-              progress={85} 
-              color="bg-accent" 
-              icon={<BookOpen className="w-5 h-5 text-accent" />}
-            />
           </div>
         </div>
       </div>
@@ -197,7 +189,26 @@ function StudentDashboard({ user }: { user: any }) {
 function ProfessorDashboard({ user }: { user: any }) {
   const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
   const [showNotifications, setShowNotifications] = useState(false);
+  const [recentActivities, setRecentActivities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await fetch("/api/activities/recent");
+        if (res.ok) {
+          const data = await res.json();
+          setRecentActivities(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch recent activities", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecent();
+  }, []);
 
   return (
     <div className="space-y-10">
@@ -257,13 +268,13 @@ function ProfessorDashboard({ user }: { user: any }) {
             <NextCourseItem 
               time="10:30" 
               title="Programmation Web Avancée" 
-              room="B-105" 
+              room="Salle G1" 
               professor="120 étudiants inscrits" 
             />
             <NextCourseItem 
               time="14:00" 
               title="Base de Données" 
-              room="C-201" 
+              room="Amphi B750" 
               professor="85 étudiants inscrits" 
             />
           </div>
@@ -272,8 +283,25 @@ function ProfessorDashboard({ user }: { user: any }) {
         <div className="space-y-6">
           <h3 className="text-2xl font-bold">Cours Récents</h3>
           <div className="space-y-4">
-            <ActivityProgressCard title="Mathématiques Avancées" enrolled={120} capacity={150} />
-            <ActivityProgressCard title="Programmation Web" enrolled={85} capacity={100} />
+            {loading ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : recentActivities.length > 0 ? (
+              recentActivities.map((activity) => (
+                <ActivityProgressCard 
+                  key={activity.id}
+                  title={activity.title} 
+                  enrolled={activity.enrolled || 0} 
+                  capacity={activity.capacity} 
+                  professor={activity.professor_name}
+                />
+              ))
+            ) : (
+              <div className="p-8 bg-muted/30 rounded-3xl border border-dashed border-border text-center">
+                <p className="text-text-secondary text-sm">Aucun cours récent dans votre filière.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -320,17 +348,28 @@ function StatCard({ title, value, subtitle, progress, color, icon }: any) {
   );
 }
 
-function ActivityProgressCard({ title, enrolled, capacity }: any) {
+function ActivityProgressCard({ title, enrolled, capacity, professor }: any) {
   const percent = (enrolled / capacity) * 100;
   return (
-    <div className="p-5 bg-surface rounded-3xl border border-border">
-      <h4 className="font-bold mb-3">{title}</h4>
+    <div className="p-5 bg-surface rounded-3xl border border-border shadow-soft">
+      <div className="flex justify-between items-start mb-3">
+        <h4 className="font-bold">{title}</h4>
+        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">
+          {percent >= 100 ? "Complet" : "En cours"}
+        </span>
+      </div>
       <div className="flex justify-between text-xs mb-2">
         <span className="text-text-secondary">Inscrits</span>
         <span className="font-bold">{enrolled} / {capacity}</span>
       </div>
-      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-4">
         <div className="h-full bg-accent rounded-full" style={{ width: `${percent}%` }}></div>
+      </div>
+      <div className="flex items-center gap-2 pt-3 border-t border-border/50">
+        <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center">
+          <User className="w-3 h-3 text-text-secondary" />
+        </div>
+        <p className="text-[10px] text-text-secondary">Proposé par <span className="font-bold text-foreground">{professor}</span></p>
       </div>
     </div>
   );
